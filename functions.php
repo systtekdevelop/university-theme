@@ -110,15 +110,13 @@ function BootstrapJS() {
 function university_styles() {
     BootstrapCss();
     /** Font Awesome  */
-    wp_enqueue_style( 'fontawesome-5', get_template_directory_uri(). '/css/font-awesome.min.css' , false, '5.14.0' );
+    wp_enqueue_style( 'fontawesome5', get_template_directory_uri(). '/css/icons/all.min.css' , false, '5.14.0' );
     /** Google Fonts */
     wp_enqueue_style('custom-google-fonts', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
     /** Theme Styles */
-    wp_enqueue_style( 'university', get_template_directory_uri(). '/style.css', array(), '1.0.0' );
-    /** Additinal Theme Styles */
-    wp_enqueue_style( 'modules', get_template_directory_uri(). '/css/modules.css', array(), false );
+    wp_enqueue_style( 'university', get_template_directory_uri(). '/style.css', false, '1.0.0');
 }
-add_action( 'wp_enqueue_scripts', 'university_styles', 10 );
+add_action( 'wp_enqueue_scripts', 'university_styles', 5 );
 
 function university_scripts() {
     jqueryJS();
@@ -127,8 +125,14 @@ function university_scripts() {
 
     BootstrapJS();
 
-    wp_enqueue_script( 'university', get_template_directory_uri(). '/js/scripts.js', array(), university_theme_version(), true );
+    if (strstr($_SERVER['SERVER_NAME'], 'university.local')) {
+        wp_enqueue_script('university', 'http://localhost:3000/bundled.js', NULL, '1.0', true);
+    } else {
+        wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/vendors~scripts.8c97d901916ad616a264.js'), NULL, '1.0', true);
+        wp_enqueue_script('main-university-js', get_theme_file_uri('/bundled-assets/scripts.bc49dbb23afb98cfc0f7.js'), NULL, '1.0', true);
+        wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.bc49dbb23afb98cfc0f7.css'));
+    }
 
-    wp_enqueue_script('main-university-js', get_theme_file_uri('/js/scripts-bundled.js'), NULL, '1.0', true);
+    
 }
 add_action( 'wp_enqueue_scripts', 'university_scripts', 10 );
